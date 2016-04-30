@@ -1,22 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package banksystem;
 
-/**
- *
- * @author Dawid
- */
+import java.math.BigDecimal;
+
 public class BankSystem {
 
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String[] args) {
         System.out.println("Test");
-        // TODO code application logic here
+        ClientAccount test = new ClientAccount(123, "Dawid", "Swinoga", "Bedzelin ul. Grzybowa 14", "95050403652", new BigDecimal(1200));
+        test.displayInfo();
+        test.withdraw(new BigDecimal(100));
+        test.displayInfo();
+        test.deposit(new BigDecimal(500));
+        test.displayInfo();
     }
     
 }
