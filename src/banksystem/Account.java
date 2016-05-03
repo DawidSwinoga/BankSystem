@@ -27,20 +27,22 @@ public class Account implements Serializable {
         balance = balance.add(amount);
     }
 
-    public void withdraw(BigDecimal amount) {
+    public boolean withdraw(BigDecimal amount) {
         if (isEnoughMoney(amount)) {
             balance = balance.subtract(amount);
+            return true;
         } else {
-            System.out.println("Not enough money.");
+            return false;
         }
     }
     
-    public void transfer(Account destinationAccount, BigDecimal amount) {
+    public boolean transfer(Account destinationAccount, BigDecimal amount) {
         if(isEnoughMoney(amount)) {
             withdraw(amount);
             destinationAccount.deposit(amount);
+            return true;
         } else {
-             System.out.println("Not enough money.");
+             return false;
         }
     }
 
@@ -52,42 +54,6 @@ public class Account implements Serializable {
         System.out.println(this.clientNumber + "\t" + this.lastName + "\t" + this.name + "\t" + this.adress + "\t" + this.pesel + "\t" + this.balance);
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 11 * hash + Objects.hashCode(this.name);
-        hash = 11 * hash + Objects.hashCode(this.lastName);
-        hash = 11 * hash + Objects.hashCode(this.adress);
-        hash = 11 * hash + Objects.hashCode(this.pesel);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Account other = (Account) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.lastName, other.lastName)) {
-            return false;
-        }
-        if (!Objects.equals(this.adress, other.adress)) {
-            return false;
-        }
-        if (!Objects.equals(this.pesel, other.pesel)) {
-            return false;
-        }
-        return true;
-    }
 
     public int getClientNumber() {
         return clientNumber;

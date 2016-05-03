@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
 
 public class BankSystem {
 
@@ -30,7 +31,7 @@ public class BankSystem {
       }
         
         database.displayAllAccounts();
-        Menu menu = new Menu();
+        Menu menu = new Menu(database);
         System.out.println("Welcome to the banking system!");
         menu.display();
         
@@ -44,6 +45,7 @@ public class BankSystem {
         database.displayAllAccounts();
         database.append("Piotr", "Borczyk", "Belkow", "Nie wiem");
         database.displayAllAccounts();
+        database.findByClientNumber(60).deposit(BigDecimal.ONE);
 
         try
       {
