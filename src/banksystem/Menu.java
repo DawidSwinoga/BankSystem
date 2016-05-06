@@ -2,6 +2,7 @@ package banksystem;
 
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -49,7 +50,7 @@ public class Menu {
                 transfer();
                 break;
             case 6:
-                displayAllAccounts();
+                printAccounts(database.getAccounts());
                 break;
             case 7:
                 findByMenu();
@@ -63,7 +64,7 @@ public class Menu {
 
     private void findByMenu() {
         System.out.println("Find by:");
-        System.out.println("1. Client ID.");
+        System.out.println("1. Client number.");
         System.out.println("2. Name.");
         System.out.println("3. Last Name.");
         System.out.println("4. Pesel.");
@@ -88,11 +89,13 @@ public class Menu {
         }
     }
     
-    private void displayAllAccounts() {
+    private void printAccounts(List<Account> accounts) {
         if(database == null) {
             System.out.println("No accounts");
         } else {
-            database.displayAllAccounts();
+            for(Account account : accounts) {
+                account.displayInfo();
+            }
         }
     }
     

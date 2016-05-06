@@ -30,21 +30,21 @@ public class BankSystem {
          return;
       }
         
-        database.displayAllAccounts();
+        //database.displayAllAccounts();
         Menu menu = new Menu(database);
         System.out.println("Welcome to the banking system!");
         menu.display();
         
         database.append("Dawid", "Swinoga", "Bedzelin ul. Grzybowa 14", "95040265562");
         database.append("Michal", "Parysz", "Bedzelin ul. Grzybowa 14", "95050403652");
-        database.displayAllAccounts();
+        //database.displayAllAccounts();
         System.out.println("find by:");
         database.findByClientNumber(1).displayInfo();
         System.out.println("End of findy by");
         database.remove(0);
-        database.displayAllAccounts();
+        //database.displayAllAccounts();
         database.append("Piotr", "Borczyk", "Belkow", "Nie wiem");
-        database.displayAllAccounts();
+       // database.displayAllAccounts();
         database.findByClientNumber(60).deposit(BigDecimal.ONE);
 
         try
@@ -78,7 +78,7 @@ public class BankSystem {
          return;
       }
         
-        database.displayAllAccounts();
+       // database.displayAllAccounts();
     }
     
 }

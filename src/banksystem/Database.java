@@ -20,10 +20,8 @@ public class Database implements Serializable {
         ++nextFreeClientID;
     }
 
-    public void displayAllAccounts() {
-        for (Account account : accounts) {
-            account.displayInfo();
-        }
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
     public Account remove(int clientNumber) {
