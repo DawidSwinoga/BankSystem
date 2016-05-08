@@ -1,27 +1,21 @@
 package banksystem;
 
 import java.math.BigDecimal;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Scanner;
 
 public class Menu {
 
     private Database database;
-    private Scanner scanner;
+    private ConsoleInput consoleInput;
 
     public Menu(Database database) {
-        scanner = new Scanner(System.in);
         this.database = database;
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        scanner.close();
+        consoleInput = new ConsoleInput();
     }
 
     public void display() {
+        boolean exit = false;
+
         System.out.println("============= MENU ==========");
         System.out.println("1. Create new account.");
         System.out.println("2. Remove account");
@@ -33,36 +27,38 @@ public class Menu {
         System.out.println("0. Exit");
         System.out.println("\nOption: ");
 
-        switch (parseAnswerToInt()) {
-            case 1:
-                createNewAccount();
-                break;
-            case 2:
-                removeAccount();
-                break;
-            case 3:
-                deposit();
-                break;
-            case 4:
-                withdraw();
-                break;
-            case 5:
-                transfer();
-                break;
-            case 6:
-                printAccounts(database.getAccounts());
-                break;
-            case 7:
-                findByMenu();
-                break;
-            case 0:
-                break;
-            default:
-                break;
-        }
+        do {
+            switch (consoleInput.getUnsignedInt()) {
+                case 1:
+                    createNewAccount();
+                    break;
+                case 2:
+                    removeAccount();
+                    break;
+                case 3:
+                    deposit();
+                    break;
+                case 4:
+                    withdraw();
+                    break;
+                case 5:
+                    transfer();
+                    break;
+                case 6:
+                    printAccounts(database.getAccounts());
+                    break;
+                case 7:
+                    findByMenu();
+                    break;
+                case 0:
+                    exit = true;
+                    break;
+            }
+        } while (!exit);
     }
 
     private void findByMenu() {
+        boolean exit = false;
         System.out.println("Find by:");
         System.out.println("1. Client number.");
         System.out.println("2. Name.");
@@ -71,34 +67,57 @@ public class Menu {
         System.out.println("5. Adress.");
         System.out.println("0. Exit");
 
-        switch (parseAnswerToInt()) {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 0:
-                break;
-            default:
-                break;
-        }
+        do {
+            switch (consoleInput.getUnsignedInt()) {
+                case 1:
+                    System.out.println("=== Find by client number ===");
+                    System.out.println("client number: ");
+                    printAccount(database.findByClientNumber(consoleInput.getUnsignedInt()));
+                    break;
+                case 2:
+                    System.out.println("=== Find by name ===");
+                    System.out.println("name: ");
+                    printAccounts(database.findByName(consoleInput.getString()));
+                    break;
+                case 3:
+                    System.out.println("=== Find by last name ===");
+                    System.out.println("last name: ");
+                    printAccounts(database.findByLastName(consoleInput.getString()));
+                    break;
+                case 4:
+                    System.out.println("=== Find by pesel ===");
+                    System.out.println("pesel: ");
+                    printAccount(database.findByPesel(consoleInput.getString()));
+                    break;
+                case 5:
+                    System.out.println("=== Find by adress ===");
+                    System.out.println("adress: ");
+                    printAccounts(database.findByAdress(consoleInput.getString()));
+                    break;
+                case 0:
+                    exit = true;
+                    break;
+            }
+        } while (!exit);
     }
-    
+
     private void printAccounts(List<Account> accounts) {
-        if(database == null) {
+        if (database == null) {
             System.out.println("No accounts");
         } else {
-            for(Account account : accounts) {
+            for (Account account : accounts) {
                 account.displayInfo();
             }
         }
     }
-    
+
+    private void printAccount(Account account) {
+        if (account == null) {
+            System.out.println("No account");
+        } else {
+            account.displayInfo();
+        }
+    }
 
     private void transfer() {
         BigDecimal amount;
@@ -107,21 +126,21 @@ public class Menu {
         System.out.println("==== transfer ====");
 
         System.out.println("Enter source client number");
-        accountSrc = database.findByClientNumber(parseAnswerToInt());
+        accountSrc = database.findByClientNumber(consoleInput.getUnsignedInt());
         if (accountSrc != null) {
             System.out.println("Source account does not exist.");
             return;
         }
 
         System.out.println("Enter source client number");
-        accountDsc = database.findByClientNumber(parseAnswerToInt());
+        accountDsc = database.findByClientNumber(consoleInput.getUnsignedInt());
         if (accountDsc != null) {
             System.out.println("Destinatnio account does not exist.");
             return;
         }
 
         System.out.println("How much money you want to transfer?");
-        amount = new BigDecimal(parseAnswerToInt());
+        amount = new BigDecimal(consoleInput.getString());
 
         if (accountSrc.isEnoughMoney(amount)) {
             if (confirm("withdraw money")) {
@@ -138,10 +157,10 @@ public class Menu {
         Account account;
         System.out.println("==== withdraw ====");
         System.out.println("Enter client number");
-        account = database.findByClientNumber(parseAnswerToInt());
+        account = database.findByClientNumber(consoleInput.getUnsignedInt());
 
         System.out.println("How much money you want to withdraw?");
-        amount = new BigDecimal(parseAnswerToInt());
+        amount = new BigDecimal(consoleInput.getString());
 
         if (account != null) {
             if (account.isEnoughMoney(amount)) {
@@ -159,10 +178,10 @@ public class Menu {
         Account account;
         System.out.println("==== deposit ====");
         System.out.println("Enter client number");
-        account = database.findByClientNumber(parseAnswerToInt());
+        account = database.findByClientNumber(consoleInput.getUnsignedInt());
 
         System.out.println("How much money you want to deposit?");
-        amount = new BigDecimal(parseAnswerToInt());
+        amount = new BigDecimal(consoleInput.getUnsignedInt());
 
         if (account != null) {
             if (confirm("deposit money")) {
@@ -178,7 +197,7 @@ public class Menu {
         System.out.println("Enter client number: ");
 
         if (confirm("remove account")) {
-            if (database.remove(parseAnswerToInt()) == null) {
+            if (database.remove(consoleInput.getUnsignedInt()) == null) {
                 System.out.println("Account was not exist.");
             } else {
                 System.out.println("Account was remove.");
@@ -190,7 +209,7 @@ public class Menu {
         String choice;
         do {
             System.out.println("Are you sure you want to " + nameOption + "?[y/n]");
-            choice = scanner.next();
+            choice = consoleInput.getString();
 
             if (choice.equals("y") || choice.equals("Y")) {
                 return true;
@@ -209,17 +228,17 @@ public class Menu {
 
         System.out.println("==== Create new account ====");
         System.out.println("Name: ");
-        name = scanner.next();
+        name = consoleInput.getString();
         System.out.println("Last name: ");
-        lastName = scanner.next();
+        lastName = consoleInput.getString();
         System.out.println("Adress: ");
-        adress = scanner.next();
+        adress = consoleInput.getString();
         System.out.println("Pesel: ");
-        pesel = scanner.next();
+        pesel = consoleInput.getString();
 
         if (database.findByPesel(pesel) == null) {
             if (confirm("create new account")) {
-                database.append(name, lastName, adress, pesel);
+                database.add(name, lastName, adress, pesel);
                 System.out.println("Account was created.");
             } else {
                 System.out.println("Account was not created.");
@@ -229,21 +248,4 @@ public class Menu {
         }
 
     }
-
-    private int parseAnswerToInt() {
-        int answer = -1;
-
-        do {
-            try {
-                answer = scanner.nextInt();
-            } catch (InputMismatchException e) {
-                System.out.println("Enter the number.");
-            }
-            if (answer < 0) {
-                System.out.println("The number must be greater then zero.");
-            }
-        } while (answer < 0);
-        return answer;
-    }
-
 }
