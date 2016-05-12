@@ -15,19 +15,18 @@ public class Menu {
 
     public void display() {
         boolean exit = false;
-
-        System.out.println("============= MENU ==========");
-        System.out.println("1. Create new account.");
-        System.out.println("2. Remove account");
-        System.out.println("3. Deposit");
-        System.out.println("4. Withdraw");
-        System.out.println("5. Transfer");
-        System.out.println("6. Display information about all accounts");
-        System.out.println("7. Display information about selected accounts");
-        System.out.println("0. Exit");
-        System.out.println("\nOption: ");
-
         do {
+            System.out.println("============= MENU ==========");
+            System.out.println("1. Create new account.");
+            System.out.println("2. Remove account");
+            System.out.println("3. Deposit");
+            System.out.println("4. Withdraw");
+            System.out.println("5. Transfer");
+            System.out.println("6. Display information about all accounts");
+            System.out.println("7. Display information about selected accounts");
+            System.out.println("0. Exit");
+            System.out.println("\nOption: ");
+
             switch (consoleInput.getUnsignedInt()) {
                 case 1:
                     createNewAccount();
@@ -59,15 +58,15 @@ public class Menu {
 
     private void findByMenu() {
         boolean exit = false;
-        System.out.println("Find by:");
-        System.out.println("1. Client number.");
-        System.out.println("2. Name.");
-        System.out.println("3. Last Name.");
-        System.out.println("4. Pesel.");
-        System.out.println("5. Adress.");
-        System.out.println("0. Exit");
-
         do {
+            System.out.println("Find by:");
+            System.out.println("1. Client number.");
+            System.out.println("2. Name.");
+            System.out.println("3. Last Name.");
+            System.out.println("4. Pesel.");
+            System.out.println("5. Adress.");
+            System.out.println("0. Exit");
+
             switch (consoleInput.getUnsignedInt()) {
                 case 1:
                     System.out.println("=== Find by client number ===");

@@ -5,52 +5,41 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.math.BigDecimal;
 
 public class BankSystem {
-
+    private static Database database;
     
     public static void main(String[] args) {
-        Database database = new Database();
-          try
+        Menu menu;
+        readDatabase("database");
+        menu = new Menu(database);
+        menu.display();
+        writeDatabase("database");
+        
+    }
+    
+    public static void readDatabase(String nameFile) {
+         try
       {
-         FileInputStream fileIn = new FileInputStream("account.ser");
+         FileInputStream fileIn = new FileInputStream(nameFile + ".ser");
          ObjectInputStream in = new ObjectInputStream(fileIn);
          database = (Database)in.readObject();
          in.close();
          fileIn.close();
-      }catch(IOException i)
+      }catch(IOException e) {
+          database = new Database();
+      } catch(ClassNotFoundException e)
       {
-         i.printStackTrace();
-         return;
-      }catch(ClassNotFoundException c)
-      {
-         System.out.println("Employee class not found");
-         c.printStackTrace();
-         return;
+         System.out.println("Database class not found");
+         System.exit(0);
       }
-        
-        //database.displayAllAccounts();
-        Menu menu = new Menu(database);
-        System.out.println("Welcome to the banking system!");
-        menu.display();
-        
-        database.add("Dawid", "Swinoga", "Bedzelin ul. Grzybowa 14", "95040265562");
-        database.add("Michal", "Parysz", "Bedzelin ul. Grzybowa 14", "95050403652");
-        //database.displayAllAccounts();
-        System.out.println("find by:");
-        database.findByClientNumber(1).displayInfo();
-        System.out.println("End of findy by");
-        database.remove(0);
-        //database.displayAllAccounts();
-        database.add("Piotr", "Borczyk", "Belkow", "Nie wiem");
-       // database.displayAllAccounts();
-        database.findByClientNumber(60).deposit(BigDecimal.ONE);
-
+    }
+    
+    
+    public static void writeDatabase(String nameFile) {
         try
       {
-         FileOutputStream fileOut =
-         new FileOutputStream("account.ser");
+         FileOutputStream fileOut =  new FileOutputStream(nameFile + ".ser");
          ObjectOutputStream out = new ObjectOutputStream(fileOut);
          out.writeObject(database);
          out.close();
@@ -58,27 +47,6 @@ public class BankSystem {
       }catch(IOException i)
       {
       }
-        
-        
-        try
-      {
-         FileInputStream fileIn = new FileInputStream("account.ser");
-         ObjectInputStream in = new ObjectInputStream(fileIn);
-         database = (Database)in.readObject();
-         in.close();
-         fileIn.close();
-      }catch(IOException i)
-      {
-         i.printStackTrace();
-         return;
-      }catch(ClassNotFoundException c)
-      {
-         System.out.println("Employee class not found");
-         c.printStackTrace();
-         return;
-      }
-        
-       // database.displayAllAccounts();
     }
     
 }

@@ -14,6 +14,8 @@ public class Database implements Serializable {
         this.nextFreeClientID = 0;
         this.accounts = new ArrayList<>();
     }
+    
+    
 
     public void add(String name, String lastName, String adress, String pesel) {
         accounts.add(new Account(nextFreeClientID, name, lastName, adress, pesel));

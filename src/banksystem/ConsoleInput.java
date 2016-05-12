@@ -11,7 +11,7 @@ public class ConsoleInput {
         scanner = new Scanner(System.in);
     }
     
-    public String getString() {        
+    public String getString() {  
         return scanner.next();
     }  
     
@@ -23,6 +23,7 @@ public class ConsoleInput {
                 number = scanner.nextInt();
             } catch (InputMismatchException e) {
                 System.out.println("Enter the number.");
+                scanner.nextLine();
             }
             if (number < 0) {
                 System.out.println("The number must be greater then zero.");
