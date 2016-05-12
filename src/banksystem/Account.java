@@ -47,7 +47,7 @@ public class Account implements Serializable {
     }
 
     public boolean isEnoughMoney(BigDecimal amount) {
-        return balance.compareTo(BigDecimal.ZERO) >= 0;
+        return balance.subtract(amount).compareTo(BigDecimal.ZERO) >= 0;
     }
 
     public void displayInfo() {

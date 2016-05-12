@@ -126,15 +126,15 @@ public class Menu {
 
         System.out.println("Enter source client number");
         accountSrc = database.findByClientNumber(consoleInput.getUnsignedInt());
-        if (accountSrc != null) {
+        if (accountSrc == null) {
             System.out.println("Source account does not exist.");
             return;
         }
 
-        System.out.println("Enter source client number");
+        System.out.println("Enter destination client number");
         accountDsc = database.findByClientNumber(consoleInput.getUnsignedInt());
-        if (accountDsc != null) {
-            System.out.println("Destinatnio account does not exist.");
+        if (accountDsc == null) {
+            System.out.println("Destination account does not exist.");
             return;
         }
 

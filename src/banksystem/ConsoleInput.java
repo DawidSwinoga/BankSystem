@@ -7,11 +7,13 @@ import java.util.Scanner;
 public class ConsoleInput {
     private Scanner scanner;
 
+    
     public ConsoleInput() {
         scanner = new Scanner(System.in);
     }
     
-    public String getString() {  
+    public String getString() {
+        cleanInput();
         return scanner.next();
     }  
     
@@ -19,11 +21,11 @@ public class ConsoleInput {
         int number = -1;        
         
         do {
+            cleanInput();   
             try {
                 number = scanner.nextInt();
             } catch (InputMismatchException e) {
-                System.out.println("Enter the number.");
-                scanner.nextLine();
+                System.out.println("Enter the number.");                             
             }
             if (number < 0) {
                 System.out.println("The number must be greater then zero.");
@@ -33,6 +35,12 @@ public class ConsoleInput {
         return number;
         
     }
+     
+     private void cleanInput() {
+         if (scanner.hasNextLine()) {
+             scanner.nextLine();
+         }
+     }
 
     @Override
     protected void finalize() throws Throwable {
