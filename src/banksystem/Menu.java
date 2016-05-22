@@ -17,19 +17,19 @@ public class Menu {
         boolean exit = false;
         do {
             System.out.println("============= MENU ==========");
-            System.out.println("1. Create new account.");
-            System.out.println("2. Remove account");
-            System.out.println("3. Deposit");
-            System.out.println("4. Withdraw");
-            System.out.println("5. Transfer");
-            System.out.println("6. Display information about all accounts");
-            System.out.println("7. Display information about selected accounts");
-            System.out.println("0. Exit");
-            System.out.println("\nOption: ");
+            System.out.println("1. Stworz nowe konto.");
+            System.out.println("2. Usun konto.");
+            System.out.println("3. Wplata.");
+            System.out.println("4. Wyplata.");
+            System.out.println("5. Przelew");
+            System.out.println("6. Wyswietl informacje o wszystkich kontach");
+            System.out.println("7. Wyswietl informacje o wybranych kontach");
+            System.out.println("0. Wyjdz");
+            System.out.println("\nOpcja: ");
 
-            switch (consoleInput.getUnsignedInt()) {
+            switch (consoleInput.nextUnsignedInt()) {
                 case 1:
-                    createNewAccount();
+                    createAccount();
                     break;
                 case 2:
                     removeAccount();
@@ -50,6 +50,7 @@ public class Menu {
                     findByMenu();
                     break;
                 case 0:
+                    database.save();
                     exit = true;
                     break;
             }
@@ -59,39 +60,38 @@ public class Menu {
     private void findByMenu() {
         boolean exit = false;
         do {
-            System.out.println("Find by:");
-            System.out.println("1. Client number.");
-            System.out.println("2. Name.");
-            System.out.println("3. Last Name.");
-            System.out.println("4. Pesel.");
-            System.out.println("5. Adress.");
-            System.out.println("0. Exit");
+            System.out.println("Szukaj po:");
+            System.out.println("1. Numerze klienta");
+            System.out.println("2. Imieniu.");
+            System.out.println("3. Nazwisku.");
+            System.out.println("4. Peslu.");
+            System.out.println("5. Adresie.");
+            System.out.println("0. Wyjscie");
 
-            switch (consoleInput.getUnsignedInt()) {
+            switch (consoleInput.nextUnsignedInt()) {
                 case 1:
-                    System.out.println("=== Find by client number ===");
-                    System.out.println("client number: ");
-                    printAccount(database.findByClientNumber(consoleInput.getUnsignedInt()));
+                    System.out.println("=== Szukaj po numerze ===");
+                    System.out.print("numer klienta: ");
+                    printAccount(database.findByClientNumber(consoleInput.nextUnsignedInt()));
                     break;
                 case 2:
-                    System.out.println("=== Find by name ===");
-                    System.out.println("name: ");
-                    printAccounts(database.findByName(consoleInput.getString()));
+                    System.out.println("=== Szukaj po imieniu ===");
+                    System.out.print("imie: ");
+                    printAccounts(database.findByName(consoleInput.nextString()));
                     break;
                 case 3:
-                    System.out.println("=== Find by last name ===");
-                    System.out.println("last name: ");
-                    printAccounts(database.findByLastName(consoleInput.getString()));
+                    System.out.println("=== Szukaj po nazwisku ===");
+                    System.out.print("nazwisko: ");
+                    printAccounts(database.findByLastName(consoleInput.nextString()));
                     break;
                 case 4:
-                    System.out.println("=== Find by pesel ===");
-                    System.out.println("pesel: ");
-                    printAccount(database.findByPesel(consoleInput.getString()));
+                    System.out.println("=== Szukaj po peslu ===");
+                    System.out.print("pesel: ");
+                    printAccount(database.findByPesel(consoleInput.nextString()));
                     break;
                 case 5:
-                    System.out.println("=== Find by adress ===");
-                    System.out.println("adress: ");
-                    printAccounts(database.findByAdress(consoleInput.getString()));
+                    System.out.println("=== Szukaj po adresie ===");
+                    printAccounts(database.findByAdress(newAddress()));
                     break;
                 case 0:
                     exit = true;
@@ -106,6 +106,7 @@ public class Menu {
         } else {
             for (Account account : accounts) {
                 account.displayInfo();
+                System.out.println("\n\n");
             }
         }
     }
@@ -122,31 +123,32 @@ public class Menu {
         BigDecimal amount;
         Account accountSrc;
         Account accountDsc;
-        System.out.println("==== transfer ====");
+        System.out.println("==== przelew ====");
 
-        System.out.println("Enter source client number");
-        accountSrc = database.findByClientNumber(consoleInput.getUnsignedInt());
+        System.out.println("Podaj numer klienta zrodlowego");
+        accountSrc = database.findByClientNumber(consoleInput.nextUnsignedInt());
         if (accountSrc == null) {
-            System.out.println("Source account does not exist.");
+            System.out.println("Konto zrodlowe nie istnieje");
             return;
         }
 
-        System.out.println("Enter destination client number");
-        accountDsc = database.findByClientNumber(consoleInput.getUnsignedInt());
+        System.out.println("Podaj numer konta docelowego");
+        accountDsc = database.findByClientNumber(consoleInput.nextUnsignedInt());
         if (accountDsc == null) {
-            System.out.println("Destination account does not exist.");
+            System.out.println("Konto docelowe nie istnieje.");
             return;
         }
 
-        System.out.println("How much money you want to transfer?");
-        amount = new BigDecimal(consoleInput.getString());
+        System.out.println("Podaj ilosc pieniedzy ktore chcesz przelac?");
+        amount = consoleInput.nextPositiveBigDecimal();
 
         if (accountSrc.isEnoughMoney(amount)) {
-            if (confirm("withdraw money")) {
+            if (confirm("Czy na pewno chcesz wykonac przelew?")) {
                 accountSrc.withdraw(amount);
+                accountDsc.deposit(amount);
             }
         } else {
-            System.out.println("Not enought money");
+            System.out.println("Nie wystarczajaca liczba pieniedzy.");
         }
 
     }
@@ -154,61 +156,66 @@ public class Menu {
     private void withdraw() {
         BigDecimal amount;
         Account account;
-        System.out.println("==== withdraw ====");
-        System.out.println("Enter client number");
-        account = database.findByClientNumber(consoleInput.getUnsignedInt());
+        System.out.println("==== Wyplata ====");
+        System.out.println("Wprowadz numer klienta.");
+        account = database.findByClientNumber(consoleInput.nextUnsignedInt());
 
-        System.out.println("How much money you want to withdraw?");
-        amount = new BigDecimal(consoleInput.getString());
+        System.out.println("Ile pieniedzy chcesz wyplacic?");
+        amount = consoleInput.nextPositiveBigDecimal();
 
-        if (account != null) {
-            if (account.isEnoughMoney(amount)) {
-                if (confirm("withdraw money")) {
-                    account.withdraw(amount);
-                }
-            }
-        } else {
-            System.out.println("Account does not exist.");
+        if (account == null) {
+            System.out.println("Brak konta o podanym numerze klienta.");
+            return;
         }
+
+        if (account.isEnoughMoney(amount)) {
+            if (confirm("Czy na pewno chcesz wyplacic pieniadze?")) {
+                account.withdraw(amount);
+            }
+        }
+
     }
 
     private void deposit() {
         BigDecimal amount;
         Account account;
-        System.out.println("==== deposit ====");
-        System.out.println("Enter client number");
-        account = database.findByClientNumber(consoleInput.getUnsignedInt());
+        System.out.println("==== Wplata ====");
+        System.out.println("Wprowadz nr klienta");
+        account = database.findByClientNumber(consoleInput.nextUnsignedInt());
 
-        System.out.println("How much money you want to deposit?");
-        amount = new BigDecimal(consoleInput.getUnsignedInt());
+        System.out.println("Ile pieniedzy chcesz wplacic?");
+        amount = consoleInput.nextPositiveBigDecimal();
 
-        if (account != null) {
-            if (confirm("deposit money")) {
-                account.deposit(amount);
-            }
-        } else {
-            System.out.println("Account does not exist.");
+        if (account == null) {
+            System.out.println("Konto o podanym numerze klienta nie istnieje.");
+            return;
         }
+
+        if (confirm("Czy na pewno chcesz wplacic pieniadze?")) {
+            account.deposit(amount);
+        }
+
     }
 
     private void removeAccount() {
-        System.out.println("==== remove account ====");
-        System.out.println("Enter client number: ");
+        System.out.println("==== Usuwanie konta ====");
+        System.out.println("Podaj numer klienta: ");
+        int clientNumber = consoleInput.nextUnsignedInt();
 
-        if (confirm("remove account")) {
-            if (database.remove(consoleInput.getUnsignedInt()) == null) {
-                System.out.println("Account was not exist.");
+        if (confirm("Czy na pewno chcesz usunac konto?")) {
+            if (database.remove(clientNumber) == null) {
+                System.out.println("Konto nie istnieje.");
             } else {
-                System.out.println("Account was remove.");
+                System.out.println("Konto zostalo usuniete.");
             }
         }
     }
 
-    private boolean confirm(String nameOption) {
+    private boolean confirm(String operationName) {
         String choice;
         do {
-            System.out.println("Are you sure you want to " + nameOption + "?[y/n]");
-            choice = consoleInput.getString();
+            System.out.println(operationName + "[y/n]");
+            choice = consoleInput.nextString();
 
             if (choice.equals("y") || choice.equals("Y")) {
                 return true;
@@ -219,32 +226,41 @@ public class Menu {
         } while (true);
     }
 
-    private void createNewAccount() {
-        String name;
-        String lastName;
-        String adress;
-        String pesel;
+    private void createAccount() {
+        String name, lastName, pesel;
+        Address address;
 
-        System.out.println("==== Create new account ====");
-        System.out.println("Name: ");
-        name = consoleInput.getString();
-        System.out.println("Last name: ");
-        lastName = consoleInput.getString();
-        System.out.println("Adress: ");
-        adress = consoleInput.getString();
-        System.out.println("Pesel: ");
-        pesel = consoleInput.getString();
+        System.out.println("==== Tworzenie nowego konta ====");
+        System.out.print("Imie: ");
+        name = consoleInput.nextString();
+        System.out.print("Nazwisko: ");
+        lastName = consoleInput.nextString();
 
-        if (database.findByPesel(pesel) == null) {
-            if (confirm("create new account")) {
-                database.add(name, lastName, adress, pesel);
-                System.out.println("Account was created.");
-            } else {
-                System.out.println("Account was not created.");
-            }
-        } else {
-            System.out.println("Account already exists");
+        address = newAddress();
+        System.out.print("Pesel: ");
+        pesel = consoleInput.nextString();
+
+        if (database.findByPesel(pesel) != null) {
+            System.out.println("Konto o podanym numerze pesel juz istnieje.");
+            return;
         }
+        if (confirm("Czy chcesz stworzyc nowe konto?")) {
+            database.add(name, lastName, address, pesel);
+            System.out.println("Konto zostalo stworzone.");
+        } else {
+            System.out.println("Konto nie zostalo stworzone.");
+        }
+    }
 
+    private Address newAddress() {
+        String city, street, postalCode;
+        System.out.print("Miasto: ");
+        city = consoleInput.nextLine();
+        System.out.print("Ulica: ");
+        street = consoleInput.nextLine();
+        System.out.print("Kod pocztowy: ");
+        postalCode = consoleInput.nextString();
+
+        return new Address(city, street, postalCode);
     }
 }

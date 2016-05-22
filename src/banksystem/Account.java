@@ -2,7 +2,6 @@ package banksystem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 public class Account implements Serializable {
 
@@ -10,15 +9,15 @@ public class Account implements Serializable {
     private int clientNumber;
     private String name;
     private String lastName;
-    private String adress;
+    private Address address;
     private String pesel;
     private BigDecimal balance;
 
-    public Account(int clientNumber, String name, String lastName, String adress, String pesel) {
+    public Account(int clientNumber, String name, String lastName, Address address, String pesel) {
         this.clientNumber = clientNumber;
         this.name = name;
         this.lastName = lastName;
-        this.adress = adress;
+        this.address = address;
         this.pesel = pesel;
         this.balance = BigDecimal.ZERO;
     }
@@ -51,7 +50,12 @@ public class Account implements Serializable {
     }
 
     public void displayInfo() {
-        System.out.println(this.clientNumber + "\t" + this.lastName + "\t" + this.name + "\t" + this.adress + "\t" + this.pesel + "\t" + this.balance);
+        System.out.println("=== " + clientNumber + " ===");
+        System.out.println("Imie: " + name);
+        System.out.println("Nazwisko: " + lastName);
+        System.out.println("Pesel: " + pesel);
+        System.out.println("Stan konta: " + balance);
+        address.displayInfo();
     }
 
 
@@ -67,8 +71,8 @@ public class Account implements Serializable {
         return lastName;
     }
 
-    public String getAdress() {
-        return adress;
+    public Address getAdress() {
+        return address;
     }
 
     public String getPesel() {
